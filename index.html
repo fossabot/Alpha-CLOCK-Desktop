@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>α CLOCK Desktop</title>
+		<link rel="stylesheet" href="https://unpkg.com/carbon-components/css/carbon-components.min.css">
+		<link rel="stylesheet" href="styles/style.css">
+		<script src="https://unpkg.com/carbon-components/scripts/carbon-components.min.js"></script>
+		<script src="https://code.jquery.com/jquery-3.4.1.min.js" onload="window.$ = window.jQuery = module.exports;"></script>
+		<script src="scripts/script.js"></script>
+	</head>
+	<body>
+		<header class="bx--header" role="banner"><a class="bx--header__name" href="#">α CLOCK Desktop&nbsp;<span class="bx--header__name--prefix"></span></a>
+			<div class="bx--header__global">
+				<div class="bx--header__action" id="toggle-wrapper">
+					<div class="bx--form-item">
+						<input class="bx--toggle-input" id="toggle" type="checkbox">
+						<label class="bx--toggle-input__label" for="toggle" id="toggle-label">
+							<span class="bx--toggle__switch"></span>
+						</label>
+					</div>
+				</div>
+				<button class="bx--header__action" type="button">
+					<img src="images/close.svg">
+				</button>
+			</div>
+		</header>
+		<div data-loading class="bx--loading">
+			<svg class="bx--loading__svg" viewBox="-75 -75 150 150">
+				<circle class="bx--loading__stroke" cx="0" cy="0" r="37.5" />
+			</svg>
+		</div>
+		<div id="content"></div>
+	</body>
+</html>
