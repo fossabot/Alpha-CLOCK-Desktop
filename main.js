@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu, Tray } = require("electron");
+const { app, BrowserWindow, Tray } = require("electron");
 app.on("ready", function() {
 	var win = new BrowserWindow({
 		width: 1557,
