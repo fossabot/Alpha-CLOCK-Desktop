@@ -13,8 +13,7 @@ header {
 	height: 20px;
 	filter: invert(1);
 }
-.bx--header__action img,
-.bx--header__action div {
+.bx--header__action {
 	-webkit-app-region: no-drag;
 }
 #toggle-wrapper {

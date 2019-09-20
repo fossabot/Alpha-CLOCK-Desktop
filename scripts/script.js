@@ -8,7 +8,10 @@ $(function () {
 		$(".bx--loading").detach();
 	});
 	const { remote } = require("electron");
-	$(".bx--header__action img").click(function (_e) {
+	$("#minimize").click(function (_e) {
+		remote.BrowserWindow.getFocusedWindow().hide();
+	});
+	$("#close").click(function (_e) {
 		remote.BrowserWindow.getFocusedWindow().close();
 	});
 	const fs = require("fs");
