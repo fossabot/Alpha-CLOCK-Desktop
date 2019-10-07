@@ -15,9 +15,8 @@ This Electron application ports the “live” wallpapers of Sony's α CLOCK pro
 ```
 git clone https://github.com/TheLastZombie/Alpha-CLOCK-Desktop
 cd Alpha-CLOCK-Desktop
-npm install -g electron
-npm install adm-zip node-schedule request wallpaper
-electron main.js
+npm install
+npm start
 ```
 
 ## Usage
