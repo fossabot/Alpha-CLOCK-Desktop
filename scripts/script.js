@@ -3,7 +3,7 @@ $(function () {
 	request("https://www.sony.net/united/clock/assets/js/heritage_data.js", function (_error, _response, body) {
 		eval(body);
 		for (i = 0; i < a_clock_heritage_data.length; i++) {
-			$("#content").append("<div class='heritage'><div class='overlay'><div class='title'>" + a_clock_heritage_data[i].name.en + (a_clock_heritage_data[i].is_new ? "<span class='bx--tag'>NEW</span>" : "") + "</div><div class='description'>" + a_clock_heritage_data[i].country.en +"</div><div class='bx--btn-set'><button class='bx--btn bx--btn--primary' data='" + a_clock_heritage_data[i].id + "'>Select Scene</button><button class='bx--btn bx--btn--secondary' data='" + a_clock_heritage_data[i].id + "'>Open in Browser</button></div></div><img class='preview' src='https://www.sony.net/united/clock/share/img/photo/" + a_clock_heritage_data[i].id + "/fp/" + a_clock_heritage_data[i].thumbnail_default + ".jpg'></div>");
+			$("#content").append("<div class='heritage'><div class='overlay'><div class='title'>" + a_clock_heritage_data[i].name.en + (a_clock_heritage_data[i].is_new ? "<span class='bx--tag'>NEW</span>" : "") + "</div><div class='description'>" + a_clock_heritage_data[i].country.en + "</div><div class='bx--btn-set'><button class='acd-btn-select bx--btn bx--btn--primary' data='" + a_clock_heritage_data[i].id + "'>Select Scene</button><button class='acd-btn-open bx--btn bx--btn--secondary bx--btn--icon-only' data='" + a_clock_heritage_data[i].id + "'><img src='images/browser.svg'></button><button class='acd-btn-download bx--btn bx--btn--secondary bx--btn--icon-only' data='" + a_clock_heritage_data[i].id + "'><img src='images/download.svg'></button></div></div><img class='preview' src='https://www.sony.net/united/clock/share/img/photo/" + a_clock_heritage_data[i].id + "/fp/" + a_clock_heritage_data[i].thumbnail_default + ".jpg'></div>");
 		};
 		$(".bx--loading").detach();
 	});
@@ -33,7 +33,7 @@ $(document).on("change", "#toggle", function () {
 		});
 	};
 });
-$(document).on("click", ".bx--btn--primary", function () {
+$(document).on("click", ".acd-btn-select", function () {
 	const fs = require("fs");
 	var data = $(this).attr("data");
 	fs.writeFileSync("current.txt", data);
@@ -44,9 +44,28 @@ $(document).on("click", ".bx--btn--primary", function () {
 		$(".bx--header__name--prefix").text(temp[0].name.en);
 	});
 });
-$(document).on("click", ".bx--btn--secondary", function () {
+$(document).on("click", ".acd-btn-open", function () {
 	const { shell } = require("electron");
 	shell.openExternal("https://www.sony.net/united/clock/heritage/" + $(this).attr("data") + "/");
+});
+$(document).on("click", ".acd-btn-download", function () {
+	var data = $(this).attr("data");
+	const request = require("request");
+	request("https://www.sony.net/united/clock/assets/js/heritage_data.js", function (_error, _response, body) {
+		eval(body);
+		var temp = a_clock_heritage_data.filter(x => x.id == data);
+		alert(data);
+		$("#content").hide();
+		$("body").append("<div class='download'><div class='block'><div class='title'>" + temp[0].name.en + "</div><section class='bx--structured-list'><div class='bx--structured-list-thead'><div class='bx--structured-list-row bx--structured-list-row--header-row'><div class='bx--structured-list-th'>Method</div><div class='bx--structured-list-th'>Description</div><div class='bx--structured-list-th'>Link</div></div></div><div class='bx--structured-list-tbody'><div class='bx--structured-list-row'><div class='bx--structured-list-td'>Default</div><div class='bx--structured-list-td'>Downloads resources only, including snapshots, music tracks and soundscapes, but without a way to automatically set it as wallpaper.</div><div class='bx--structured-list-td'><a href='#'>Download</a></div></div><div class='bx--structured-list-row'><div class='bx--structured-list-td'>WinDynamicDesktop</div><div class='bx--structured-list-td'>Downloads the photos and converts them into a dynamic wallpaper to use on macOS Mojave or later.</div><div class='bx--structured-list-td'><a href='#'>Download</a></div></div><div class='bx--structured-list-row'><div class='bx--structured-list-td'>macOS</div><div class='bx--structured-list-td'>Downloads the photos and converts them into a theme to use with WinDynamicDesktop on Windows.</div><div class='bx--structured-list-td'><a href='#'>Download</a></div></div><div class='bx--structured-list-row'><div class='bx--structured-list-td'>GNOME</div><div class='bx--structured-list-td'>Downloads the photos and converts them into a time-shifting wallpaper to use with GNOME-based environments.</div><div class='bx--structured-list-td'><a href='#'>Download</a></div></div></div></section></div></div>");
+		$(".bx--header__name").hide();
+		$(".bx--header").prepend("<button class='acd-btn-return bx--header__action' type='button' id='return'><img src='images/return.svg'></button>");
+	});
+});
+$(document).on("click", ".acd-btn-return", function () {
+	$("#content").show();
+	$(".download").remove();
+	$(".bx--header__name").show();
+	$(".acd-btn-return").remove();
 });
 function main() {
 	if ($("#toggle").prop("checked") == false) {

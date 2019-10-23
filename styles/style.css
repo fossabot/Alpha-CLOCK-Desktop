@@ -8,7 +8,8 @@ header {
 .bx--header__name {
 	height: calc(100% + 1px);
 }
-.bx--header__action img {
+.bx--header__action img,
+.bx--btn--secondary img {
 	width: 20px;
 	height: 20px;
 	filter: invert(1);
@@ -71,7 +72,7 @@ header {
 .bx--btn--secondary:focus {
 	border-color: #3D3D3D;
 }
-.heritage .title {
+.title {
 	display: flex;
 	align-items: center;
 	font-size: 2rem;
@@ -89,6 +90,27 @@ header {
 .heritage .overlay,
 .heritage .preview {
 	width: 500px;
+}
+.download {
+	position: fixed;
+	top: 48px;
+	width: 100%;
+	height: calc(100% - 48px);
+	padding: 5px;
+	background-color: white;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.block {
+	display: block;
+	margin: 25px;
+}
+.block .title {
+	margin-bottom: 50px;
+}
+.block section {
+	margin-bottom: 0;
 }
 @keyframes rotate {
 	0% {
