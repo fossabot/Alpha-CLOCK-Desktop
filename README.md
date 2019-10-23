@@ -31,11 +31,3 @@ Please note that α CLOCK Desktop does not run in the background yet, closing it
 
 ![](images/screenshot-1.png)
 ![](images/screenshot-2.png)
-
-## Ideas
-
-- Add download modes
-  - Raw resources only (https://github.com/TheLastZombie/loaders/blob/master/Heritage%20Downloader.js)
-  - macOS Dynamic wallpaper (https://itnext.io/macos-mojave-dynamic-wallpaper-fd26b0698223)
-  - WinDynamicDesktop theme (https://github.com/t1m0thyj/WinDynamicDesktop/wiki/Creating-custom-themes)
-  - GNOME timed wallpaper (https://github.com/michalmielczynski/gnome-live-wallpaper/blob/master/gnome-timed.xml)
