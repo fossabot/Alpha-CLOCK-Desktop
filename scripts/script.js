@@ -53,11 +53,38 @@ $(document).on("click", ".acd-btn-download", function () {
 	const request = require("request");
 	request("https://www.sony.net/united/clock/assets/js/heritage_data.js", function (_error, _response, body) {
 		eval(body);
-		var temp = a_clock_heritage_data.filter(x => x.id == data);
+		var temp = a_clock_heritage_data.filter(x => x.id == data)[0];
 		$("#content").hide();
-		$("body").append("<div class='download'><div class='block'><div class='title'>" + temp[0].name.en + "</div><section class='bx--structured-list'><div class='bx--structured-list-thead'><div class='bx--structured-list-row bx--structured-list-row--header-row'><div class='bx--structured-list-th'>Method</div><div class='bx--structured-list-th'>Description</div><div class='bx--structured-list-th'>Link</div></div></div><div class='bx--structured-list-tbody'><div class='bx--structured-list-row'><div class='bx--structured-list-td'>Default</div><div class='bx--structured-list-td'>Downloads resources only, including snapshots, music tracks and soundscapes, but without a way to automatically set it as wallpaper.</div><div class='bx--structured-list-td'><a href='#'>Download</a></div></div><div class='bx--structured-list-row'><div class='bx--structured-list-td'>WinDynamicDesktop</div><div class='bx--structured-list-td'>Downloads the photos and converts them into a dynamic wallpaper to use on macOS Mojave or later.</div><div class='bx--structured-list-td'><a href='#'>Download</a></div></div><div class='bx--structured-list-row'><div class='bx--structured-list-td'>macOS</div><div class='bx--structured-list-td'>Downloads the photos and converts them into a theme to use with WinDynamicDesktop on Windows.</div><div class='bx--structured-list-td'><a href='#'>Download</a></div></div><div class='bx--structured-list-row'><div class='bx--structured-list-td'>GNOME</div><div class='bx--structured-list-td'>Downloads the photos and converts them into a time-shifting wallpaper to use with GNOME-based environments.</div><div class='bx--structured-list-td'><a href='#'>Download</a></div></div></div></section></div></div>");
+		$("body").append("<div class='download'><div class='block'><div class='title'>" + temp.name.en + "</div><section class='bx--structured-list'><div class='bx--structured-list-thead'><div class='bx--structured-list-row bx--structured-list-row--header-row'><div class='bx--structured-list-th'>Method</div><div class='bx--structured-list-th'>Description</div><div class='bx--structured-list-th'>Link</div></div></div><div class='bx--structured-list-tbody'><div class='bx--structured-list-row'><div class='bx--structured-list-td'>Default</div><div class='bx--structured-list-td'>Downloads resources only, including snapshots, music tracks and soundscapes, but without a way to automatically set it as wallpaper.</div><div class='bx--structured-list-td'><a class='dl-link' data-heritage='" + temp.id + "' data-method='def' href='#'>Download</a></div></div><div class='bx--structured-list-row'><div class='bx--structured-list-td'>WinDynamicDesktop</div><div class='bx--structured-list-td'>Downloads the photos and converts them into a theme to use with WinDynamicDesktop on Windows.</div><div class='bx--structured-list-td'><a class='dl-link' data-heritage='" + temp.id + "' data-method='wdd' href='#'>Download</a></div></div><div class='bx--structured-list-row'><div class='bx--structured-list-td'>macOS</div><div class='bx--structured-list-td'>Downloads the photos and converts them into a dynamic wallpaper to use on macOS Mojave or later.</div><div class='bx--structured-list-td'><a class='dl-link' data-heritage='" + temp.id + "' data-method='mac' href='#'>Download</a></div></div><div class='bx--structured-list-row'><div class='bx--structured-list-td'>GNOME</div><div class='bx--structured-list-td'>Downloads the photos and converts them into a time-shifting wallpaper to use with GNOME-based environments.</div><div class='bx--structured-list-td'><a class='dl-link' data-heritage='" + temp.id + "' data-method='gtw' href='#'>Download</a></div></div></div></section></div></div>");
 		$(".bx--header__name").hide();
 		$(".bx--header").prepend("<button class='acd-btn-return bx--header__action' type='button' id='return'><img src='images/return.svg'></button>");
+	});
+});
+$(document).on("click", ".dl-link", function () {
+	var dataHeritage = $(this).attr("data-heritage");
+	var dataMethod = $(this).attr("data-method");
+	const { dialog } = require("electron").remote;
+	var dataDirectory = dialog.showOpenDialogSync({
+		properties: ["openDirectory"]
+	})[0];
+	const request = require("request");
+	request("https://www.sony.net/united/clock/assets/js/heritage_data.js", function (_error, _response, body) {
+		eval(body);
+		var dataResponse = a_clock_heritage_data.filter(x => x.id == dataHeritage)[0];
+		const fs = require("fs");
+		const path = require("path");
+		const sanitize = require("sanitize-filename");
+		dataDirectory = path.join(dataDirectory, sanitize(dataResponse.name.en, {
+			replacement: "_"
+		}));
+		if (fs.existsSync(dataDirectory)) {
+			alert("Directory already exists!");
+			return;
+		};
+		fs.mkdirSync(dataDirectory);
+		process.chdir(dataDirectory);
+		console.log(dataResponse);
+		console.log(dataMethod); // def, wdd, mac, gtw
 	});
 });
 $(document).on("click", ".acd-btn-return", function () {
