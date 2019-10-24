@@ -81,7 +81,9 @@ $(document).on("click", ".dl-link", function () {
 			alert("Directory already exists!");
 			return;
 		};
-		fs.mkdirSync(dataDirectory);
+		fs.mkdirSync(dataDirectory, {
+			recursive: true
+		});
 		process.chdir(dataDirectory);
 		console.log(dataResponse);
 		console.log(dataMethod); // def, wdd, mac, gtw
