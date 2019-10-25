@@ -66,7 +66,11 @@ $(document).on("click", ".dl-link", function () {
 	const { dialog } = require("electron").remote;
 	var dataDirectory = dialog.showOpenDialogSync({
 		properties: ["openDirectory"]
-	})[0];
+	});
+	if (dataDirectory == undefined) {
+		return;
+	};
+	dataDirectory = dataDirectory[0];
 	const request = require("request");
 	request("https://www.sony.net/united/clock/assets/js/heritage_data.js", function (_error, _response, body) {
 		eval(body);
@@ -85,8 +89,57 @@ $(document).on("click", ".dl-link", function () {
 			recursive: true
 		});
 		process.chdir(dataDirectory);
-		console.log(dataResponse);
-		console.log(dataMethod); // def, wdd, mac, gtw
+		switch (dataMethod) {
+			case "def":
+				$(".acd-btn-return").addClass("acd-btn-return-disabled");
+				var dataLinks = [];
+				var dataResolutions = ["3840_2160", "1920_1200", "1920_1080", "1280_1024"];
+				for (i = 0; i < 12; i++) {
+					for (j = 0; j < dataResolutions.length; j++) {
+						dataLinks.push("https://di.update.sony.net/ACLK/wallpaper/" + dataResponse.id + "/" + dataResolutions[j] + "/fp/" + dataResponse.id + "_" + dataResolutions[j] + "_fp_" + (i + 1).toString().padStart(2, "0") + ".zip");
+					};
+				};
+				for (i = 0; i < 10; i++) {
+					for (j = 0; j < dataResolutions.length; j++) {
+						dataLinks.push("https://di.update.sony.net/ACLK/wallpaper/" + dataResponse.id + "/" + dataResolutions[j] + "/ss/" + dataResponse.id + "_" + dataResolutions[j] + "_ss_" + (i + 1).toString().padStart(2, "0") + ".zip");
+					};
+				};
+				if (dataResponse.music) {
+					dataLinks.push("https://www.sony.net/united/clock/assets/sound/theme_song_of_world_heritage_" + dataResponse.music + ".mp3");
+				};
+				if (dataResponse.soundscape) {
+					dataLinks.push("https://www.sony.net" + dataResponse.soundscape.media.mp3);
+				};
+				const async = require("async");
+				var dataThreads = 1;
+				$(".block").append("<div class='description'></div>");
+				async.eachOfLimit(dataLinks, dataThreads, function (asyncData, key, callback) {
+					$(".block .description").html("Downloading <a href='" + asyncData + "'>" + asyncData + "</a> (" + (key + 1) + " of " + dataLinks.length + ")...");
+					request({
+						url: asyncData,
+						encoding: null
+					}, function (_error, _response, body) {
+						fs.writeFileSync(path.basename(asyncData), body);
+						callback();
+					});
+				}, function () {
+					$(".block .description").html("Finished downloading " + dataResponse.name.en + ".");
+					$(".acd-btn-return").removeClass("acd-btn-return-disabled");
+				});
+				break;
+			case "wdd":
+				alert("Coming soon...");
+				break;
+			case "mac":
+				alert("Coming soon...");
+				break;
+			case "gtw":
+				alert("Coming soon...");
+				break;
+			default:
+				alert("Error: Unexpected method " + dataMethod + "!");
+				break;
+		};
 	});
 });
 $(document).on("click", ".acd-btn-return", function () {

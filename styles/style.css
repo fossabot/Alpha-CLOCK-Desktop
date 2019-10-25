@@ -17,6 +17,10 @@ header {
 .bx--header__action {
 	-webkit-app-region: no-drag;
 }
+.acd-btn-return-disabled {
+	opacity: 0.5;
+	pointer-events: none;
+}
 #toggle-wrapper {
 	width: 60px;
 }
@@ -111,6 +115,9 @@ header {
 }
 .block section {
 	margin-bottom: 0;
+}
+.block .description {
+	margin-top: 50px;
 }
 @keyframes rotate {
 	0% {
