@@ -92,6 +92,7 @@ $(document).on("click", ".dl-link", function () {
 		switch (dataMethod) {
 			case "def":
 				$(".acd-btn-return").addClass("acd-btn-return-disabled");
+				$(".dl-link").addClass("dl-link-disabled");
 				var dataLinks = [];
 				var dataResolutions = ["3840_2160", "1920_1200", "1920_1080", "1280_1024"];
 				for (i = 0; i < 12; i++) {
@@ -125,6 +126,7 @@ $(document).on("click", ".dl-link", function () {
 				}, function () {
 					$(".block .description").html("Finished downloading " + dataResponse.name.en + ".");
 					$(".acd-btn-return").removeClass("acd-btn-return-disabled");
+					$(".dl-link").removeClass("dl-link-disabled");
 				});
 				break;
 			case "wdd":

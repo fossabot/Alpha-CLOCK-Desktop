@@ -119,6 +119,10 @@ header {
 .block .description {
 	margin-top: 50px;
 }
+.dl-link-disabled {
+	pointer-events: none;
+	filter: grayscale(100%);
+}
 @keyframes rotate {
 	0% {
 		transform: translate(-50%, -50%) rotate(0deg);
