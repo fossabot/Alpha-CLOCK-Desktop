@@ -113,30 +113,43 @@ $(document).on("click", ".dl-link", function () {
 				};
 				const async = require("async");
 				var dataThreads = 1;
+				var dataFilesSuccess = 0;
+				var dataFilesErorr = 0;
+				$(".block .description").remove();
 				$(".block").append("<div class='description'></div>");
 				async.eachOfLimit(dataLinks, dataThreads, function (asyncData, key, callback) {
 					$(".block .description").html("Downloading <a href='" + asyncData + "'>" + asyncData + "</a> (" + (key + 1) + " of " + dataLinks.length + ")...");
 					request({
 						url: asyncData,
 						encoding: null
-					}, function (_error, _response, body) {
-						fs.writeFileSync(path.basename(asyncData), body);
-						callback();
+					}, function (error, _response, body) {
+						if (error) {
+							dataFilesErorr++;
+							callback();
+						} else {
+							dataFilesSuccess++;
+							fs.writeFileSync(path.basename(asyncData), body);
+							callback();
+						};
 					});
 				}, function () {
-					$(".block .description").html("Finished downloading " + dataResponse.name.en + ".");
+					$(".block .description").html("Finished downloading " + dataResponse.name.en + " (with " + dataFilesSuccess + " successful and " + dataFilesErorr + " failed request" + (dataFilesErorr != 1 ? "s" : "") + ").");
 					$(".acd-btn-return").removeClass("acd-btn-return-disabled");
 					$(".dl-link").removeClass("dl-link-disabled");
+					process.chdir(__dirname);
 				});
 				break;
 			case "wdd":
 				alert("Coming soon...");
+				process.chdir(__dirname);
 				break;
 			case "mac":
 				alert("Coming soon...");
+				process.chdir(__dirname);
 				break;
 			case "gtw":
 				alert("Coming soon...");
+				process.chdir(__dirname);
 				break;
 			default:
 				alert("Error: Unexpected method " + dataMethod + "!");
