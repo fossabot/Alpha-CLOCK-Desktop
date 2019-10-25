@@ -89,10 +89,11 @@ $(document).on("click", ".dl-link", function () {
 			recursive: true
 		});
 		process.chdir(dataDirectory);
+		$(".block .description").remove();
+		$(".acd-btn-return").addClass("acd-btn-return-disabled");
+		$(".dl-link").addClass("dl-link-disabled");
 		switch (dataMethod) {
 			case "def":
-				$(".acd-btn-return").addClass("acd-btn-return-disabled");
-				$(".dl-link").addClass("dl-link-disabled");
 				var dataLinks = [];
 				var dataResolutions = ["3840_2160", "1920_1200", "1920_1080", "1280_1024"];
 				for (i = 0; i < 12; i++) {
@@ -115,7 +116,6 @@ $(document).on("click", ".dl-link", function () {
 				var dataThreads = 1;
 				var dataFilesSuccess = 0;
 				var dataFilesErorr = 0;
-				$(".block .description").remove();
 				$(".block").append("<div class='description'></div>");
 				async.eachOfLimit(dataLinks, dataThreads, function (asyncData, key, callback) {
 					$(".block .description").html("Downloading <a href='" + asyncData + "'>" + asyncData + "</a> (" + (key + 1) + " of " + dataLinks.length + ")...");
@@ -141,18 +141,27 @@ $(document).on("click", ".dl-link", function () {
 				break;
 			case "wdd":
 				alert("Coming soon...");
+				$(".acd-btn-return").removeClass("acd-btn-return-disabled");
+				$(".dl-link").removeClass("dl-link-disabled");
 				process.chdir(__dirname);
 				break;
 			case "mac":
 				alert("Coming soon...");
+				$(".acd-btn-return").removeClass("acd-btn-return-disabled");
+				$(".dl-link").removeClass("dl-link-disabled");
 				process.chdir(__dirname);
 				break;
 			case "gtw":
 				alert("Coming soon...");
+				$(".acd-btn-return").removeClass("acd-btn-return-disabled");
+				$(".dl-link").removeClass("dl-link-disabled");
 				process.chdir(__dirname);
 				break;
 			default:
 				alert("Error: Unexpected method " + dataMethod + "!");
+					$(".acd-btn-return").removeClass("acd-btn-return-disabled");
+					$(".dl-link").removeClass("dl-link-disabled");
+				process.chdir(__dirname);
 				break;
 		};
 	});
