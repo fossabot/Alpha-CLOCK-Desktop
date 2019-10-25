@@ -3,9 +3,13 @@ $(function () {
 	request("https://www.sony.net/united/clock/assets/js/heritage_data.js", function (_error, _response, body) {
 		eval(body);
 		for (i = 0; i < a_clock_heritage_data.length; i++) {
-			$("#content").append("<div class='heritage'><div class='overlay'><div class='title'>" + a_clock_heritage_data[i].name.en + (a_clock_heritage_data[i].is_new ? "<span class='bx--tag'>NEW</span>" : "") + "</div><div class='description'>" + a_clock_heritage_data[i].country.en + "</div><div class='bx--btn-set'><button class='acd-btn-select bx--btn bx--btn--primary' data='" + a_clock_heritage_data[i].id + "'>Select Scene</button><button class='acd-btn-open bx--btn bx--btn--secondary bx--btn--icon-only' data='" + a_clock_heritage_data[i].id + "'><img src='images/browser.svg'></button><button class='acd-btn-download bx--btn bx--btn--secondary bx--btn--icon-only' data='" + a_clock_heritage_data[i].id + "'><img src='images/download.svg'></button></div></div><img class='preview' src='https://www.sony.net/united/clock/share/img/photo/" + a_clock_heritage_data[i].id + "/fp/" + a_clock_heritage_data[i].thumbnail_default + ".jpg'></div>");
+			$("#content").append("<div class='heritage'><div class='overlay'><div class='title'>" + a_clock_heritage_data[i].name.en + (a_clock_heritage_data[i].is_new ? "<span class='bx--tag'>NEW</span>" : "") + "</div><div class='description'>" + a_clock_heritage_data[i].country.en + "</div><div class='bx--btn-set'><button class='acd-btn-select bx--btn bx--btn--primary bx--btn--icon-only' data='" + a_clock_heritage_data[i].id + "'><img src='images/select-off.svg'></button><button class='acd-btn-open bx--btn bx--btn--secondary bx--btn--icon-only' data='" + a_clock_heritage_data[i].id + "'><img src='images/browser.svg'></button><button class='acd-btn-download bx--btn bx--btn--secondary bx--btn--icon-only' data='" + a_clock_heritage_data[i].id + "'><img src='images/download.svg'></button></div></div><img class='preview' src='https://www.sony.net/united/clock/share/img/photo/" + a_clock_heritage_data[i].id + "/fp/" + a_clock_heritage_data[i].thumbnail_default + ".jpg'></div>");
 		};
 		$(".bx--loading").detach();
+		const fs = require("fs");
+		if (fs.existsSync("current.txt")) {
+			name();
+		};
 	});
 	const { remote } = require("electron");
 	$("#minimize").click(function (_e) {
@@ -14,10 +18,6 @@ $(function () {
 	$("#close").click(function (_e) {
 		remote.BrowserWindow.getFocusedWindow().close();
 	});
-	const fs = require("fs");
-	if (fs.existsSync("current.txt")) {
-		name();
-	};
 	fs.watchFile("current.txt", function (_curr, _prev) {
 		main();
 		name();
@@ -42,6 +42,8 @@ $(document).on("click", ".acd-btn-select", function () {
 		eval(body);
 		var temp = a_clock_heritage_data.filter(x => x.id == data);
 		$(".bx--header__name--prefix").text(temp[0].name.en);
+		$(".acd-btn-select img").attr("src", "images/select-off.svg");
+		$(".acd-btn-select[data='" + temp[0].id + "'] img").attr("src", "images/select-on.svg");
 	});
 });
 $(document).on("click", ".acd-btn-open", function () {
@@ -252,6 +254,8 @@ function name() {
 					$(".bx--header__name--prefix").text("");
 				} else {
 					$(".bx--header__name--prefix").text(temp[0].name.en);
+					$(".acd-btn-select img").attr("src", "images/select-off.svg");
+					$(".acd-btn-select[data='" + temp[0].id + "'] img").attr("src", "images/select-on.svg");
 				};
 			});
 		} else {
