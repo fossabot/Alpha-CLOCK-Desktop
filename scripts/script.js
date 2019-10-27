@@ -44,6 +44,7 @@ $(document).on("click", ".acd-btn-select", function () {
 		$(".bx--header__name--prefix").text(temp[0].name.en);
 		$(".acd-btn-select img").attr("src", "images/select-off.svg");
 		$(".acd-btn-select[data='" + temp[0].id + "'] img").attr("src", "images/select-on.svg");
+		main();
 	});
 });
 $(document).on("click", ".acd-btn-open", function () {
