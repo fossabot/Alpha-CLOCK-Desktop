@@ -18,6 +18,7 @@ $(function () {
 	$("#close").click(function (_e) {
 		remote.BrowserWindow.getFocusedWindow().close();
 	});
+	const fs = require("fs");
 	fs.watchFile("current.txt", function (_curr, _prev) {
 		main();
 		name();
@@ -92,12 +93,18 @@ $(document).on("click", ".dl-link", function () {
 			recursive: true
 		});
 		process.chdir(dataDirectory);
-		$(".block .description").remove();
 		$(".acd-btn-return").addClass("acd-btn-return-disabled");
 		$(".dl-link").addClass("dl-link-disabled");
+		$(".block .description").remove();
+		$(".block").append("<div class='description'></div>");
+		var dataLinks = [];
+		const async = require("async");
+		var dataThreads = 1;
+		var dataFilesSuccess = 0;
+		var dataFilesErorr = 0;
+		const AdmZip = require("adm-zip");
 		switch (dataMethod) {
 			case "def":
-				var dataLinks = [];
 				var dataResolutions = ["3840_2160", "1920_1200", "1920_1080", "1280_1024"];
 				for (i = 0; i < 12; i++) {
 					for (j = 0; j < dataResolutions.length; j++) {
@@ -115,11 +122,6 @@ $(document).on("click", ".dl-link", function () {
 				if (dataResponse.soundscape) {
 					dataLinks.push("https://www.sony.net" + dataResponse.soundscape.media.mp3);
 				};
-				const async = require("async");
-				var dataThreads = 1;
-				var dataFilesSuccess = 0;
-				var dataFilesErorr = 0;
-				$(".block").append("<div class='description'></div>");
 				async.eachOfLimit(dataLinks, dataThreads, function (asyncData, key, callback) {
 					$(".block .description").html("Downloading <a href='" + asyncData + "'>" + asyncData + "</a> (" + (key + 1) + " of " + dataLinks.length + ")...");
 					request({
@@ -144,26 +146,67 @@ $(document).on("click", ".dl-link", function () {
 				break;
 			case "wdd":
 				alert("Coming soon...");
+				$(".block .description").remove();
 				$(".acd-btn-return").removeClass("acd-btn-return-disabled");
 				$(".dl-link").removeClass("dl-link-disabled");
 				process.chdir(__dirname);
 				break;
 			case "mac":
-				alert("Coming soon...");
-				$(".acd-btn-return").removeClass("acd-btn-return-disabled");
-				$(".dl-link").removeClass("dl-link-disabled");
-				process.chdir(__dirname);
+				for (i = 0; i < 12; i++) {
+					dataLinks.push("https://di.update.sony.net/ACLK/wallpaper/" + dataResponse.id + "/3840_2160/fp/" + dataResponse.id + "_3840_2160_fp_" + (i + 1).toString().padStart(2, "0") + ".zip");
+				};
+				async.eachOfLimit(dataLinks, dataThreads, function (asyncData, key, callback) {
+					$(".block .description").html("Downloading <a href='" + asyncData + "'>" + asyncData + "</a> (" + (key + 1) + " of " + dataLinks.length + ")...");
+					request({
+						url: asyncData,
+						encoding: null
+					}, function (error, _response, body) {
+						if (error) {
+							dataFilesErorr++;
+							callback();
+						} else {
+							dataFilesSuccess++;
+							new AdmZip(body).extractAllTo(process.cwd(), true);
+							callback();
+						};
+					});
+				}, function () {
+					$(".block .description").html("Converting downloaded files to macOS format...");
+					var dataConvert = [];
+					for (i in dataResponse.fp) {
+						if (isNaN(i)) {
+							continue;
+						};
+						var dataTemp = {
+							fileName: dataResponse.id + "_3840_2160_fp_" + i + ".jpg",
+							time: "1970-01-01T" + dataResponse.fp[i].slice(0, 2) + ":" + dataResponse.fp[i].slice(2) + ":00Z"
+						};
+						if (dataResponse.preview == i) {
+							dataTemp.isPrimary = true;
+						};
+						dataConvert.push(dataTemp);
+					};
+					fs.writeFileSync("wallpapper.json", JSON.stringify(dataConvert));
+					alert("Coming soon...");
+					$(".block .description").html("Finished downloading " + dataResponse.name.en + " (with " + dataFilesSuccess + " successful and " + dataFilesErorr + " failed request" + (dataFilesErorr != 1 ? "s" : "") + ").");
+					$(".acd-btn-return").removeClass("acd-btn-return-disabled");
+					$(".dl-link").removeClass("dl-link-disabled");
+					$(".block .description").remove();
+					process.chdir(__dirname);
+				});
 				break;
 			case "gtw":
 				alert("Coming soon...");
+				$(".block .description").remove();
 				$(".acd-btn-return").removeClass("acd-btn-return-disabled");
 				$(".dl-link").removeClass("dl-link-disabled");
 				process.chdir(__dirname);
 				break;
 			default:
 				alert("Error: Unexpected method " + dataMethod + "!");
-					$(".acd-btn-return").removeClass("acd-btn-return-disabled");
-					$(".dl-link").removeClass("dl-link-disabled");
+				$(".block .description").remove();
+				$(".acd-btn-return").removeClass("acd-btn-return-disabled");
+				$(".dl-link").removeClass("dl-link-disabled");
 				process.chdir(__dirname);
 				break;
 		};
