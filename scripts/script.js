@@ -123,7 +123,7 @@ $(document).on("click", ".dl-link", function () {
 					dataLinks.push("https://www.sony.net" + dataResponse.soundscape.media.mp3);
 				};
 				async.eachOfLimit(dataLinks, dataThreads, function (asyncData, key, callback) {
-					$(".block .description").html("Downloading <a href='" + asyncData + "'>" + asyncData + "</a> (" + (key + 1) + " of " + dataLinks.length + ")...");
+					$(".block .description").html("Downloading <a href='" + asyncData + "' target='_blank'>" + asyncData + "</a> (" + (key + 1) + " of " + dataLinks.length + ")...");
 					request({
 						url: asyncData,
 						encoding: null
@@ -156,7 +156,7 @@ $(document).on("click", ".dl-link", function () {
 					dataLinks.push("https://di.update.sony.net/ACLK/wallpaper/" + dataResponse.id + "/3840_2160/fp/" + dataResponse.id + "_3840_2160_fp_" + (i + 1).toString().padStart(2, "0") + ".zip");
 				};
 				async.eachOfLimit(dataLinks, dataThreads, function (asyncData, key, callback) {
-					$(".block .description").html("Downloading <a href='" + asyncData + "'>" + asyncData + "</a> (" + (key + 1) + " of " + dataLinks.length + ")...");
+					$(".block .description").html("Downloading <a href='" + asyncData + "' target='_blank'>" + asyncData + "</a> (" + (key + 1) + " of " + dataLinks.length + ")...");
 					request({
 						url: asyncData,
 						encoding: null
@@ -187,11 +187,9 @@ $(document).on("click", ".dl-link", function () {
 						dataConvert.push(dataTemp);
 					};
 					fs.writeFileSync("wallpapper.json", JSON.stringify(dataConvert));
-					alert("Coming soon...");
-					$(".block .description").html("Finished downloading " + dataResponse.name.en + " (with " + dataFilesSuccess + " successful and " + dataFilesErorr + " failed request" + (dataFilesErorr != 1 ? "s" : "") + ").");
+					$(".block .description").html("Finished downloading " + dataResponse.name.en + ". Use <a href='https://github.com/mczachurski/wallpapper#readme' target='_blank'>wallpapper</a> for the final step of the conversion process.");
 					$(".acd-btn-return").removeClass("acd-btn-return-disabled");
 					$(".dl-link").removeClass("dl-link-disabled");
-					$(".block .description").remove();
 					process.chdir(__dirname);
 				});
 				break;

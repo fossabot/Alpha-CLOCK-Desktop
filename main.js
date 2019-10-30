@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Tray } = require("electron");
+const { app, BrowserWindow, Tray, shell } = require("electron");
 app.on("ready", function() {
 	var win = new BrowserWindow({
 		width: 1557,
@@ -20,4 +20,8 @@ app.on("ready", function() {
 		};
 	});
 	win.loadFile("index.html");
+	win.webContents.on("new-window", function (e, url) {
+		e.preventDefault();
+		shell.openExternal(url);
+	});
 });
