@@ -1,15 +1,29 @@
 {
+  "name": "alpha-clock-desktop",
+  "version": "1.0.0",
+  "description": "This application ports the “live” wallpapers of Sony's α CLOCK project to your desktop computer.",
   "main": "main.js",
   "scripts": {
     "start": "electron ."
   },
+  "author": "TheLastZombie",
   "dependencies": {
     "adm-zip": "^0.4.13",
     "async": "^3.1.0",
-    "electron": "^6.0.11",
     "node-schedule": "^1.3.2",
     "request": "^2.88.0",
     "sanitize-filename": "^1.6.3",
     "wallpaper": "^4.4.1"
-  }
+  },
+  "devDependencies": {
+    "electron": "^7.0.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TheLastZombie/Alpha-CLOCK-Desktop.git"
+  },
+  "bugs": {
+    "url": "https://github.com/TheLastZombie/Alpha-CLOCK-Desktop/issues"
+  },
+  "homepage": "https://github.com/TheLastZombie/Alpha-CLOCK-Desktop#readme"
 }
