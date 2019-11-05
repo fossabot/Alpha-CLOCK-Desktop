@@ -1,4 +1,5 @@
 const { app, BrowserWindow, Tray, shell } = require("electron");
+var tray = null;
 app.on("ready", function() {
 	var win = new BrowserWindow({
 		width: 1557,
@@ -8,7 +9,6 @@ app.on("ready", function() {
 		},
 		frame: false
 	});
-	var tray = null;
 	tray = new Tray("images/icon.png");
 	tray.setToolTip("α CLOCK Desktop");
 	tray.setIgnoreDoubleClickEvents(true);
