@@ -187,18 +187,79 @@ $(document).on("click", ".dl-link", function () {
 						dataConvert.push(dataTemp);
 					};
 					fs.writeFileSync("wallpapper.json", JSON.stringify(dataConvert));
-					$(".block .description").html("Finished downloading " + dataResponse.name.en + ". Use <a href='https://github.com/mczachurski/wallpapper#readme' target='_blank'>wallpapper</a> for the final step of the conversion process.");
+					$(".block .description").html("Finished downloading " + dataResponse.name.en + ". Pass the wallpapper.json to <a href='https://github.com/mczachurski/wallpapper#readme' target='_blank'>wallpapper</a> for the final step of the conversion process.");
 					$(".acd-btn-return").removeClass("acd-btn-return-disabled");
 					$(".dl-link").removeClass("dl-link-disabled");
 					process.chdir(__dirname);
 				});
 				break;
 			case "gtw":
-				alert("Coming soon...");
-				$(".block .description").remove();
-				$(".acd-btn-return").removeClass("acd-btn-return-disabled");
-				$(".dl-link").removeClass("dl-link-disabled");
-				process.chdir(__dirname);
+				for (i = 0; i < 12; i++) {
+					dataLinks.push("https://di.update.sony.net/ACLK/wallpaper/" + dataResponse.id + "/3840_2160/fp/" + dataResponse.id + "_3840_2160_fp_" + (i + 1).toString().padStart(2, "0") + ".zip");
+				};
+				async.eachOfLimit(dataLinks, dataThreads, function (asyncData, key, callback) {
+					$(".block .description").html("Downloading <a href='" + asyncData + "' target='_blank'>" + asyncData + "</a> (" + (key + 1) + " of " + dataLinks.length + ")...");
+					request({
+						url: asyncData,
+						encoding: null
+					}, function (error, _response, body) {
+						if (error) {
+							dataFilesErorr++;
+							callback();
+						} else {
+							dataFilesSuccess++;
+							new AdmZip(body).extractAllTo(process.cwd(), true);
+							callback();
+						};
+					});
+				}, function () {
+					$(".block .description").html("Converting downloaded files to GNOME format...");
+					const builder = require("xmlbuilder");
+					var xml;
+					var dataInit;
+					for (i in dataResponse.fp) {
+						if (isNaN(i)) {
+							continue;
+						};
+						if (!dataInit) {
+							dataInit = dataResponse.fp[i];
+							xml = builder.create("background")
+								.ele("starttime")
+								.ele("year", "1970").up()
+								.ele("month", "1").up()
+								.ele("day", "1").up()
+								.ele("hour", dataInit.slice(0, 2)).up()
+								.ele("minute", dataInit.slice(2)).up()
+								.ele("second", "0").up()
+								.up();
+						};
+						var t;
+						if (i != 1) {
+							var h = dataResponse.fp[i].slice(0, 2);
+							var m = dataResponse.fp[i].slice(2);
+							t = h * 3600 + m * 60;
+						} else {
+							t = 0;
+						};
+						var tn;
+						if (dataResponse.fp[Number(i) + 1]) {
+							var hn = dataResponse.fp[Number(i) + 1].slice(0, 2);
+							var mn = dataResponse.fp[Number(i) + 1].slice(2);
+							tn = hn * 3600 + mn * 60;
+						} else {
+							tn = 86400;
+						};
+						xml.ele("static")
+							.ele("duration", tn - t).up()
+							.ele("file", dataResponse.id + "_3840_2160_fp_" + i + ".jpg").up();
+					};
+					xml = xml.end();
+					fs.writeFileSync("timed.xml", xml);
+					$(".block .description").html("Finished downloading " + dataResponse.name.en + ". To apply it, set the generated timed.xml file as wallpaper from the GNOME Tweak Tool.");
+					$(".acd-btn-return").removeClass("acd-btn-return-disabled");
+					$(".dl-link").removeClass("dl-link-disabled");
+					process.chdir(__dirname);
+				});
 				break;
 			default:
 				alert("Error: Unexpected method " + dataMethod + "!");
