@@ -4,7 +4,17 @@
   "description": "This application ports the “live” wallpapers of Sony's α CLOCK project to your desktop computer.",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "build": {
+    "appId": "com.tlz.acd",
+    "productName": "α CLOCK Desktop",
+    "mac": {
+      "category": "public.app-category.utilities"
+    }
   },
   "author": "TheLastZombie",
   "license": "MIT",
@@ -18,7 +28,8 @@
     "xmlbuilder": "^13.0.2"
   },
   "devDependencies": {
-    "electron": "^7.1.0"
+    "electron": "^7.1.0",
+    "electron-builder": "^22.1.0"
   },
   "repository": {
     "type": "git",
