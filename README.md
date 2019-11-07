@@ -1,4 +1,6 @@
 # α CLOCK Desktop
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FTheLastZombie%2FAlpha-CLOCK-Desktop.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FTheLastZombie%2FAlpha-CLOCK-Desktop?ref=badge_shield)
+
 
 ![](images/header.png)
 
@@ -57,3 +59,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
+
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FTheLastZombie%2FAlpha-CLOCK-Desktop.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FTheLastZombie%2FAlpha-CLOCK-Desktop?ref=badge_large)
