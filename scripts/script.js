@@ -6,7 +6,7 @@ $(function () {
 			$("#content").append("<div class='heritage'><div class='overlay'><div class='title'>" + a_clock_heritage_data[i].name.en + (a_clock_heritage_data[i].is_new ? "<span class='bx--tag'>NEW</span>" : "") + "</div><div class='description'>" + a_clock_heritage_data[i].country.en + "</div><div class='bx--btn-set'><button class='acd-btn-select bx--btn bx--btn--primary bx--btn--icon-only' data='" + a_clock_heritage_data[i].id + "'><img src='images/select-off.svg'></button><button class='acd-btn-open bx--btn bx--btn--secondary bx--btn--icon-only' data='" + a_clock_heritage_data[i].id + "'><img src='images/browser.svg'></button><button class='acd-btn-download bx--btn bx--btn--secondary bx--btn--icon-only' data='" + a_clock_heritage_data[i].id + "'><img src='images/download.svg'></button></div></div><img class='preview' src='https://www.sony.net/united/clock/share/img/photo/" + a_clock_heritage_data[i].id + "/fp/" + a_clock_heritage_data[i].thumbnail_default + ".jpg'></div>");
 		};
 		$(".bx--loading").detach();
-		const fs = require("fs");
+		const fs = require("fs-extra");
 		if (fs.existsSync("current.txt")) {
 			name();
 		};
@@ -18,7 +18,7 @@ $(function () {
 	$("#close").click(function (_e) {
 		remote.BrowserWindow.getFocusedWindow().close();
 	});
-	const fs = require("fs");
+	const fs = require("fs-extra");
 	fs.watchFile("current.txt", function (_curr, _prev) {
 		main();
 		name();
@@ -35,7 +35,7 @@ $(document).on("change", "#toggle", function () {
 	};
 });
 $(document).on("click", ".acd-btn-select", function () {
-	const fs = require("fs");
+	const fs = require("fs-extra");
 	var data = $(this).attr("data");
 	fs.writeFileSync("current.txt", data);
 	const request = require("request");
@@ -79,7 +79,7 @@ $(document).on("click", ".dl-link", function () {
 	request("https://www.sony.net/united/clock/assets/js/heritage_data.js", function (_error, _response, body) {
 		eval(body);
 		var dataResponse = a_clock_heritage_data.filter(x => x.id == dataHeritage)[0];
-		const fs = require("fs");
+		const fs = require("fs-extra");
 		const path = require("path");
 		const sanitize = require("sanitize-filename");
 		dataDirectory = path.join(dataDirectory, sanitize(dataResponse.name.en, {
@@ -145,11 +145,66 @@ $(document).on("click", ".dl-link", function () {
 				});
 				break;
 			case "wdd":
-				alert("Coming soon...");
-				$(".block .description").remove();
-				$(".acd-btn-return").removeClass("acd-btn-return-disabled");
-				$(".dl-link").removeClass("dl-link-disabled");
-				process.chdir(__dirname);
+				for (i = 0; i < 12; i++) {
+					dataLinks.push("https://di.update.sony.net/ACLK/wallpaper/" + dataResponse.id + "/3840_2160/fp/" + dataResponse.id + "_3840_2160_fp_" + (i + 1).toString().padStart(2, "0") + ".zip");
+				};
+				var zip = new AdmZip();
+				async.eachOfLimit(dataLinks, dataThreads, function (asyncData, key, callback) {
+					$(".block .description").html("Downloading <a href='" + asyncData + "' target='_blank'>" + asyncData + "</a> (" + (key + 1) + " of " + dataLinks.length + ")...");
+					request({
+						url: asyncData,
+						encoding: null
+					}, function (error, _response, body) {
+						if (error) {
+							dataFilesErorr++;
+							callback();
+						} else {
+							dataFilesSuccess++;
+							new AdmZip(body).extractAllTo(process.cwd(), true);
+							callback();
+						};
+					});
+				}, function () {
+					$(".block .description").html("Converting downloaded files to WinDynamicDesktop format...");
+					var dataConvert = {
+						"displayName": dataResponse.name.en,
+						"imageFilename": dataResponse.id + "_3840_2160_fp_*.jpg",
+						"imageCredits": "Sony",
+						"sunriseImageList": [
+							1,
+							2
+						],
+						"dayImageList": [
+							3,
+							4,
+							5,
+							6
+						],
+						"sunsetImageList": [
+							7,
+							8
+						],
+						"nightImageList": [
+							9,
+							10,
+							11,
+							12
+						]
+					};
+					zip.addFile("theme.json", Buffer.alloc(JSON.stringify(dataConvert).length, JSON.stringify(dataConvert)));
+					fs.readdirSync("./").forEach(x => {
+						zip.addLocalFile(x);
+					});
+					process.chdir("..");
+					fs.removeSync(dataDirectory);
+					zip.writeZip(sanitize(dataResponse.name.en, {
+						replacement: "_"
+					}) + ".wdd");
+					$(".block .description").html("Finished downloading " + dataResponse.name.en + ". Use <a href='https://www.jetsoncreative.com/windowsdownload/#block-1c40cc266eeb0913f4dc'>WinDynamicDesktop</a> to apply the scene and use it as wallpaper.");
+					$(".acd-btn-return").removeClass("acd-btn-return-disabled");
+					$(".dl-link").removeClass("dl-link-disabled");
+					process.chdir(__dirname);
+				});
 				break;
 			case "mac":
 				for (i = 0; i < 12; i++) {
@@ -281,7 +336,7 @@ function main() {
 	if ($("#toggle").prop("checked") == false) {
 		return;
 	};
-	const fs = require("fs");
+	const fs = require("fs-extra");
 	const request = require("request");
 	if (fs.existsSync("current.txt") == false) {
 		alert("No scene selected!");
@@ -345,7 +400,7 @@ function main() {
 	};
 };
 function name() {
-	const fs = require("fs");
+	const fs = require("fs-extra");
 	if (fs.existsSync("current.txt")) {
 		var data = fs.readFileSync("current.txt", "utf8");
 		if (data) {
